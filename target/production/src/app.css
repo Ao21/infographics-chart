@@ -1,0 +1,66 @@
+html {
+  box-sizing: border-box; }
+
+*, *::after, *::before {
+  box-sizing: inherit; }
+
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative; }
+  .container::after {
+    clear: both;
+    content: "";
+    display: table; }
+
+h1, h2, h3, h4, h5, h6, p {
+  font-weight: 100;
+  margin: 0;
+  color: #333333; }
+
+h1 {
+  font-size: 5.69531rem;
+  line-height: 1.875rem; }
+
+h2 {
+  font-size: 3.79688rem;
+  line-height: 2.8125rem; }
+
+h3 {
+  font-size: 2.53125rem;
+  line-height: 3.28125rem; }
+
+h4 {
+  font-size: 1.6875rem;
+  line-height: 1.875rem; }
+
+h5 {
+  font-size: 1.125rem;
+  line-height: 1.40625rem; }
+
+h6 {
+  font-size: 0.75rem;
+  line-height: 0.9375rem; }
+
+p {
+  font-weight: 200; }
+
+#graph.fixed {
+  position: absolute;
+  left: 0;
+  top: 0; }
+
+footer {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 11px;
+  text-align: right; }
+
+body, html {
+  font-family: 'proxima-nova';
+  background-color: #fafafa; }
+
+.vz-arc-plot path {
+  transition: opacity 300ms; }
