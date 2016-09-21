@@ -21,8 +21,8 @@ export class BarStackGrouped {
 			query = {
 				width: 1000,
 				height: 400,
-				x: ["EMERGENCY", 'COUNTRY_NAME'],
-				series: "EMERGENCY",
+				x: ["YEAR"],
+				series: "CATEGORY",
 				color: 'darkBlue',
 				colorRange: 'range',
 				filterEmpty: true,
@@ -30,6 +30,8 @@ export class BarStackGrouped {
 
 			};
 		};
+
+		console.log(data);
 
 		let size = Utils.getPageSize();
 		this._svg = dimple.newSvg("#graph", size.width, size.height);
@@ -52,7 +54,6 @@ export class BarStackGrouped {
 		}
 
 
-
 		let x = myChart.addCategoryAxis("x", query.x);
 		x.title = Utils.updateText(query.x.join(' / '));
         if (query.order) {
@@ -73,6 +74,49 @@ export class BarStackGrouped {
 		myChart.draw();
 		yAxis.shapes.selectAll('text').style('text-anchor', 'end');
 
+		x.shapes.selectAll("text").each((d) => {
+			// There is a dummy empty string value on the end which we want to ignore
+			if (d) {
+				// Get the total y value
+				if (query.localCurrency && query.localCurrency === true) {
+					var total = d3.sum(data, function (t: any) { return (t.YEAR === d ? t.AMOUNT : 0); });
+				} else {
+					var total = d3.sum(data, function (t: any) { return (t.YEAR === d ? t.USD_AMOUNT : 0); });
+				}
+				// // Add the text for the label
+				var label = this._svg.append("text");
+
+				// Set the x position
+				// x._scale(d) is the tick position of each element
+				// (myChart._widthPixels() / x._max) / 2 is half of the space allocated to each element
+				label.attr("x", x._scale(d) + (myChart._widthPixels() / x._max) / 2)
+
+				// Vertically center the text on the point
+				label.attr("dy", "0.35em")
+
+				// Style the text - this can be better done with label.attr("class", "my-label-class")
+				label.style("text-anchor", "middle")
+					.style("font-size", "9px")
+					.style("font-family", "sans-serif")
+					.style("opacity", 0.8)
+
+				// Set the text itself in thousands
+				// label.text(d3.format(",.1f")(total / 1000) + "k");
+				if (query.localCurrency && query.localCurrency === true) {
+					label.text(data[0].CURRENCY + ' ' +Utils.formatMoney(total, 2, '.', ','));
+				} else {
+					label.text('USD ' + Utils.formatMoney(total, 2, '.', ','));
+				}
+								
+
+				// Once the style and the text is set we can set the y position
+				// y._scale(total) gives the y position of the total (and therefore the top of the top segment)
+				// label.node().getBBox().height gives the height of the text to leave a gap above the bar
+				label.attr("y", yAxis._scale(total) - label.node().getBBox().height)
+			}
+
+		});
+
 	}
 
 
@@ -82,9 +126,11 @@ export class BarStackGrouped {
 				tooltip = [];
 			for (i = 0; i < data.length; i += 1) {
 				if (d.aggField[0] === data[i]['_id']) {
-					tooltip.push("Local Amount: " + Utils.formatMoney(data[i].AMOUNT, 2, '.', ',') + ' ' + data[i].CURRENCY);
-					tooltip.push("Amount: " + Utils.formatMoney(data[i].USD_AMOUNT, 2, '.', ',') + ' USD');
-
+					if (query.localCurrency && query.localCurrency === true) {
+						tooltip.push("Amount: " + Utils.formatMoney(data[i].AMOUNT, 2, '.', ',') + ' ' + data[i].CURRENCY);
+					} else {
+						tooltip.push("Amount: " + Utils.formatMoney(data[i].USD_AMOUNT, 2, '.', ',') + ' USD');
+					}
 					_.forEach(query.x, (xVal) => {
 						tooltip.push(Utils.ucFirst(xVal) + ": " + data[i][xVal])
 					})
@@ -97,7 +143,6 @@ export class BarStackGrouped {
 
 	createAggregatedTooltip(mySeries, data, query) {
 		mySeries.getTooltipText = function (d) {
-			console.log(d);
 			var i,
 				total = 0,
 				tooltip = [];
@@ -106,9 +151,13 @@ export class BarStackGrouped {
 					total += data[i]['AMOUNT']
 				}
 			}
-			tooltip.push("Local Amount: " + Utils.formatMoney(total, 2, '.', ',') + ' ' + data[0].CURRENCY);
-			tooltip.push("Amount: " + Utils.formatMoney(d.yValue, 2, '.', ',') + '');
-			tooltip.push(Utils.ucFirst(query.series) + ' :' + d.aggField[0]);
+			if (query.localCurrency && query.localCurrency === true) {
+				tooltip.push("Amount: " + Utils.formatMoney(total, 2, '.', ',') + ' ' + data[0].CURRENCY);
+			} else {
+				tooltip.push("Amount: " + Utils.formatMoney(d.yValue, 2, '.', ',') + '');
+			}
+
+			tooltip.push(Utils.ucFirst(query.series) + ': ' + d.aggField[0]);
 			_.forEach(query.x, (xVal, i) => {
 				tooltip.push(Utils.ucFirst(xVal) + ": " + d.xField[i])
 			})
