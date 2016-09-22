@@ -21,8 +21,8 @@ export class BarStackGrouped {
 			query = {
 				width: 1000,
 				height: 400,
-				x: ["YEAR"],
-				series: "YEAR",
+				x: ["YEAR", "COUNTRY_NAME"],
+				series: "CATEGORY",
 				color: 'darkBlue',
 				colorRange: 'range',
 				filterEmpty: true,
@@ -76,10 +76,18 @@ export class BarStackGrouped {
 			// There is a dummy empty string value on the end which we want to ignore
 			if (d) {
 				// Get the total y value
-				if (query.localCurrency && query.localCurrency === true) {
-					var total = d3.sum(data, function (t: any) { return (t[query.series] === d ? t.AMOUNT : 0); });
+				if (query.x[0] === query.series) {
+					if (query.localCurrency && query.localCurrency === true) {
+						var total = d3.sum(data, function (t: any) { return (t[query.series] === d ? t.AMOUNT : 0); });
+					} else {
+						var total = d3.sum(data, function (t: any) { return (t[query.series] === d ? t.USD_AMOUNT : 0); });
+					}
 				} else {
-					var total = d3.sum(data, function (t: any) { return (t[query.series] === d ? t.USD_AMOUNT : 0); });
+					if (query.localCurrency && query.localCurrency === true) {
+						var total = d3.sum(data, function (t: any) { return (t[query.x[0]] === d ? t.AMOUNT : 0) });
+					} else {
+						var total = d3.sum(data, function (t: any) { return (t[query.x[0]] === d ? t.USD_AMOUNT : 0) });
+					}
 				}
 				// // Add the text for the label
 				var label = this._svg.append("text");
@@ -146,7 +154,7 @@ export class BarStackGrouped {
 				tooltip = [];
 			for (i = 0; i < data.length; i += 1) {
 				if (d.aggField[0] === data[i][query.series]) {
-					total += data[i]['AMOUNT']
+					total += data[i]['AMOUNT'];
 				}
 			}
 			if (query.localCurrency && query.localCurrency === true) {
