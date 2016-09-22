@@ -22,7 +22,7 @@ export class BarStackGrouped {
 				width: 1000,
 				height: 400,
 				x: ["YEAR"],
-				series: "CATEGORY",
+				series: "YEAR",
 				color: 'darkBlue',
 				colorRange: 'range',
 				filterEmpty: true,
@@ -30,8 +30,6 @@ export class BarStackGrouped {
 
 			};
 		};
-
-		console.log(data);
 
 		let size = Utils.getPageSize();
 		this._svg = dimple.newSvg("#graph", size.width, size.height);
@@ -79,9 +77,9 @@ export class BarStackGrouped {
 			if (d) {
 				// Get the total y value
 				if (query.localCurrency && query.localCurrency === true) {
-					var total = d3.sum(data, function (t: any) { return (t.YEAR === d ? t.AMOUNT : 0); });
+					var total = d3.sum(data, function (t: any) { return (t[query.series] === d ? t.AMOUNT : 0); });
 				} else {
-					var total = d3.sum(data, function (t: any) { return (t.YEAR === d ? t.USD_AMOUNT : 0); });
+					var total = d3.sum(data, function (t: any) { return (t[query.series] === d ? t.USD_AMOUNT : 0); });
 				}
 				// // Add the text for the label
 				var label = this._svg.append("text");
