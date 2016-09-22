@@ -2,8 +2,8 @@ import * as dimple from 'dimple-js';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
-import {Utils}  from './../../common/utils';
-import {Colors} from './../../common/colours';
+import { Utils } from './../../common/utils';
+import { Colors } from './../../common/colours';
 
 export class BarStackGrouped {
 	private _chart: any;
@@ -21,7 +21,7 @@ export class BarStackGrouped {
 			query = {
 				width: 1000,
 				height: 400,
-				x: ["YEAR", "COUNTRY_NAME"],
+				x: ["CATEGORY", "COUNTRY_NAME"],
 				series: "CATEGORY",
 				color: 'darkBlue',
 				colorRange: 'range',
@@ -54,9 +54,9 @@ export class BarStackGrouped {
 
 		let x = myChart.addCategoryAxis("x", query.x);
 		x.title = Utils.updateText(query.x.join(' / '));
-        if (query.order) {
-            x.addOrderRule(query.order);
-        }
+		if (query.order) {
+			x.addOrderRule(query.order);
+		}
 
 
 		if (query.x[0] === query.series) {
@@ -101,19 +101,48 @@ export class BarStackGrouped {
 				label.attr("dy", "0.35em")
 
 				// Style the text - this can be better done with label.attr("class", "my-label-class")
-				label.style("text-anchor", "middle")
+
+				var totalD = d;
+				if (typeof totalD === 'string') {
+					totalD = totalD.replace(' ', '');
+				}
+				label
+					.attr('class', 'totals total-' + totalD)
+					.style("text-anchor", "middle")
 					.style("font-size", "9px")
 					.style("font-family", "sans-serif")
-					.style("opacity", 0.8)
+					.style("opacity", 0);
 
 				// Set the text itself in thousands
 				// label.text(d3.format(",.1f")(total / 1000) + "k");
 				if (query.localCurrency && query.localCurrency === true) {
-					label.text(data[0].CURRENCY + ' ' +Utils.formatMoney(total, 2, '.', ','));
+					label.text(data[0].CURRENCY + ' ' + Utils.formatMoney(total, 2, '.', ','));
 				} else {
 					label.text('USD ' + Utils.formatMoney(total, 2, '.', ','));
 				}
-								
+
+
+
+				// d.on("mouseover", function () {
+				// 	console.log('hi');
+				// 	//d3.select(this).style("opacity:0.8");
+				// }).on("mouseout", function () {
+				// 	//d3.select(this).style("opacity:0");
+				// });
+
+				// d3.selectAll('rect').on('mouseover', (t) => {
+				// 	let item = t.x;
+				// 	if (typeof item === 'string') {
+				// 		item = item.replace(' ', '');
+				// 	}
+				// 	console.log(item);
+				// 	d3.selectAll('text').filter('.total-' + item).style('opacity', 0.8);
+				// })
+				d3.selectAll('rect').on('mouseout', (t) => {
+					d3.selectAll('text').filter('.totals').style('opacity', 0);
+				})
+
+
 
 				// Once the style and the text is set we can set the y position
 				// y._scale(total) gives the y position of the total (and therefore the top of the top segment)
@@ -128,6 +157,11 @@ export class BarStackGrouped {
 
 	createNonAggregageTooltip(mySeries, data, query) {
 		mySeries.getTooltipText = function (d) {
+			let item = d.x;
+			if (typeof item === 'string') {
+				item = item.replace(' ', '');
+			}
+			d3.selectAll('text').filter('.total-' + item).style('opacity', 0.8);
 			var i,
 				tooltip = [];
 			for (i = 0; i < data.length; i += 1) {
@@ -149,6 +183,7 @@ export class BarStackGrouped {
 
 	createAggregatedTooltip(mySeries, data, query) {
 		mySeries.getTooltipText = function (d) {
+
 			var i,
 				total = 0,
 				tooltip = [];
