@@ -172,8 +172,8 @@ export class BarStackGrouped {
 						tooltip.push("Amount: " + Utils.formatMoney(data[i].USD_AMOUNT, 2, '.', ',') + ' USD');
 					}
 					_.forEach(query.x, (xVal) => {
-						tooltip.push(Utils.ucFirst(xVal) + ": " + data[i][xVal])
-					})
+						tooltip.push(Utils.ucFirst(xVal) + ": " + data[i][xVal]);
+					});
 
 				}
 			}
@@ -187,6 +187,7 @@ export class BarStackGrouped {
 			if (typeof item === 'string') {
 				item = item.replace(new RegExp(' ', 'g'), '');
 			}
+
 			d3.selectAll('text').filter('.total-' + item).style('opacity', 0.8);
 
 			var i,
@@ -197,8 +198,10 @@ export class BarStackGrouped {
 					total += data[i]['AMOUNT'];
 				}
 			}
+						console.log(d);
+
 			if (query.localCurrency && query.localCurrency === true) {
-				tooltip.push("Amount: " + Utils.formatMoney(total, 2, '.', ',') + ' ' + data[0].CURRENCY);
+				tooltip.push("Amount: " + Utils.formatMoney(d.yValue, 2, '.', ',') + ' ' + data[0].CURRENCY);
 			} else {
 				tooltip.push("Amount: " + Utils.formatMoney(d.yValue, 2, '.', ',') + '');
 			}

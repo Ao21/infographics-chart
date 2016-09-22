@@ -13,13 +13,13 @@ export class DataService {
                 query = {
                     country: 'denmark',
                     graph: 'chart',
-                    // includeDeductions: false,
+                    includeDeductions: false,
                     // year: 2015
                 }
             }
 
             if (query.country === '*') {
-                d3.json('/api/infographics', (data) => {
+                d3.json('http://localhost:5000/api/infographics', (data) => {
                     if (query.year) {
                         data = data.filter((e) => { return e.YEAR === query.year });
                     }
@@ -29,7 +29,7 @@ export class DataService {
                     res(data);
                 });
             } else {
-                d3.json(`/api/infographics/${query.country}/${query.graph}`, (data) => {
+                d3.json(`http://localhost:5000/api/infographics/${query.country}/${query.graph}`, (data) => {
                     data = data.entries;
                     if (query.year) {
                         data = data.filter((e) => { return e.YEAR === query.year });
