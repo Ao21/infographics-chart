@@ -21,8 +21,8 @@ export class BarStackGrouped {
 			query = {
 				width: 1000,
 				height: 400,
-				x: ["CATEGORY", "COUNTRY_NAME"],
-				series: "CATEGORY",
+				x: ["CATEGORY"],
+				series: "YEAR",
 				color: 'darkBlue',
 				colorRange: 'range',
 				filterEmpty: true,
@@ -104,7 +104,7 @@ export class BarStackGrouped {
 
 				var totalD = d;
 				if (typeof totalD === 'string') {
-					totalD = totalD.replace(' ', '');
+					totalD = totalD.replace(new RegExp(' ', 'g'), '');
 				}
 				label
 					.attr('class', 'totals total-' + totalD)
@@ -159,7 +159,7 @@ export class BarStackGrouped {
 		mySeries.getTooltipText = function (d) {
 			let item = d.x;
 			if (typeof item === 'string') {
-				item = item.replace(' ', '');
+				item = item.replace(new RegExp(' ', 'g'), '');
 			}
 			d3.selectAll('text').filter('.total-' + item).style('opacity', 0.8);
 			var i,
@@ -183,6 +183,11 @@ export class BarStackGrouped {
 
 	createAggregatedTooltip(mySeries, data, query) {
 		mySeries.getTooltipText = function (d) {
+			let item = d.x;
+			if (typeof item === 'string') {
+				item = item.replace(new RegExp(' ', 'g'), '');
+			}
+			d3.selectAll('text').filter('.total-' + item).style('opacity', 0.8);
 
 			var i,
 				total = 0,
