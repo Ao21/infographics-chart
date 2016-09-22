@@ -21,12 +21,12 @@ export class BarStackGrouped {
 			query = {
 				width: 1000,
 				height: 400,
-				x: ["CATEGORY"],
-				series: "YEAR",
+				x: ["THEMATIC"],
+				series: "THEMATIC",
 				color: 'darkBlue',
 				colorRange: 'range',
 				filterEmpty: true,
-				localCurrency: true
+				localCurrency: false
 
 			};
 		};
