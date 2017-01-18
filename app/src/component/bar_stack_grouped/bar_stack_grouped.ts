@@ -21,8 +21,8 @@ export class BarStackGrouped {
 			query = {
 				width: 1000,
 				height: 400,
-				x: ["THEMATIC"],
-				series: "THEMATIC",
+				x: ["EMERGENCY","YEAR"],
+				series: "YEAR",
 				color: 'darkBlue',
 				colorRange: 'range',
 				filterEmpty: true,
@@ -69,6 +69,11 @@ export class BarStackGrouped {
 		if (query.hideLegend) { } else {
 			myChart.addLegend(0, 10, size.width * 0.9, 20, "right");
 		}
+
+		if (query.extraMargin) {
+			myChart.setMargins(50, 50, 50, 130); 	
+		}
+		
 		myChart.draw();
 		yAxis.shapes.selectAll('text').style('text-anchor', 'end');
 
