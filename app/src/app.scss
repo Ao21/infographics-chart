@@ -7,8 +7,11 @@
 @import "styles/components/graph";
 
 body, html {
-    font-family: 'proxima-nova';
-    background-color: darken($white, 0);
+        font-family: 'proxima-nova';
+    background-color: #fafafa;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
 }
 
 .vz-arc-plot {

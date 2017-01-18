@@ -67,7 +67,10 @@ footer {
 
 body, html {
   font-family: 'proxima-nova';
-  background-color: #fafafa; }
+  background-color: #fafafa;
+  width: 100vw;
+  height: 100vh;
+  position: absolute; }
 
 .vz-arc-plot path {
   transition: opacity 300ms; }
