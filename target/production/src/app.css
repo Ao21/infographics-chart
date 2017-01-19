@@ -70,7 +70,9 @@ body, html {
   background-color: #fafafa;
   width: 100vw;
   height: 100vh;
-  position: absolute; }
+  position: absolute;
+  margin: 0;
+  padding: 0; }
 
 .vz-arc-plot path {
   transition: opacity 300ms; }

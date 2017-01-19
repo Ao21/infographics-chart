@@ -24,6 +24,7 @@ export class BarStackGrouped {
 				x: ["EMERGENCY","YEAR"],
 				series: "YEAR",
 				color: 'darkBlue',
+				extraMargin: 160,
 				colorRange: 'range',
 				filterEmpty: true,
 				localCurrency: false
@@ -71,7 +72,7 @@ export class BarStackGrouped {
 		}
 
 		if (query.extraMargin) {
-			myChart.setMargins(50, 50, 50, 130); 	
+			myChart.setMargins(50, 50, 50, query.extraMargin); 	
 		}
 		
 		myChart.draw();
